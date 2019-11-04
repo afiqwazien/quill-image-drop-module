@@ -44,7 +44,6 @@ export class ImageDrop {
 	 * @param {Event} evt
 	 */
 	handlePaste(evt) {
-		console.log(evt);
 		if (evt.clipboardData && evt.clipboardData.items && evt.clipboardData.items.length) {
 			for (const item of evt.clipboardData.items) {
 				if (item.kind === 'file') {
