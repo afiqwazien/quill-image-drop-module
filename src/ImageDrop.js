@@ -26,6 +26,7 @@ export class ImageDrop {
 	 * @param {Event} evt
 	 */
 	handleDrop(evt) {
+		console.log(evt);
 		evt.preventDefault();
 		if (evt.dataTransfer && evt.dataTransfer.files && evt.dataTransfer.files.length) {
 			if (document.caretRangeFromPoint) {
@@ -44,11 +45,15 @@ export class ImageDrop {
 	 * @param {Event} evt
 	 */
 	handlePaste(evt) {
+		console.log(evt);
 		if (evt.clipboardData && evt.clipboardData.items && evt.clipboardData.items.length) {
+			console.log(1);
 			for (const item of evt.clipboardData.items) {
+			console.log(2);
 				if (item.kind === 'file') {
 				evt.preventDefault();
 				this.readFiles(evt.clipboardData.items, dataUrl => {
+					console.log(3);
 					const selection = this.quill.getSelection();
 					this.insert(dataUrl);
 					// Move after the image
