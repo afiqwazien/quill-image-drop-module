@@ -19,6 +19,15 @@ export class ImageDrop {
 		// listen for drop and paste events
 		this.quill.root.addEventListener('drop', this.handleDrop, false);
 		this.quill.root.addEventListener('paste', this.handlePaste, false);
+		
+		// when drag image over the drag zone, ie will open the file as default behavior.
+		// need to prevent the behavior so that the drop event will triggered correctly.
+		if (ImageDrop.isIE()) {
+			this.quill.root.addEventListener('dragover', evt => {
+				evt.stopPropagation();
+				evt.preventDefault();
+			});
+		}
 	}
 
 	/**
@@ -44,11 +53,12 @@ export class ImageDrop {
 	 * @param {Event} evt
 	 */
 	handlePaste(evt) {
-		if (evt.clipboardData && evt.clipboardData.items && evt.clipboardData.items.length) {
+		if (evt.clipboardData && evt.clipboardData.items && evt.clipboardData.items.length
+		   || window.clipboardData && window.clipboardData.files && window.clipbaordData.files.length) {
 			for (const item of evt.clipboardData.items) {
 				if (item.kind === 'file') {
 				evt.preventDefault();
-				this.readFiles(evt.clipboardData.items, dataUrl => {
+				this.readFiles(evt.clipboardData.items || window.clipboardData.files, dataUrl => {
 					const selection = this.quill.getSelection();
 					this.insert(dataUrl);
 					// Move after the image
@@ -95,6 +105,30 @@ export class ImageDrop {
 				reader.readAsDataURL(blob);
 			}
 		});
+	}
+	
+	/**
+	 * detect IE
+	 * returns version of IE or false, if browser is not Internet Explorer
+	 */
+	static isIE() {
+		const ua = window.navigator.userAgent;
+
+		const msie = ua.indexOf('MSIE ');
+		if (msie > 0) {
+			// IE 10 or older => return version number
+			return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+		}
+
+		const trident = ua.indexOf('Trident/');
+		if (trident > 0) {
+			// IE 11 => return version number
+			var rv = ua.indexOf('rv:');
+			return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+		}
+
+			// other browser
+			return false;
 	}
 
 }
