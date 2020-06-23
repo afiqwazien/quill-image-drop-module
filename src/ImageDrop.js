@@ -54,7 +54,7 @@ export class ImageDrop {
 	 */
 	handlePaste(evt) {
 		if (evt.clipboardData && evt.clipboardData.items && evt.clipboardData.items.length
-			 || window.clipboardData && window.clipboardData.files && window.clipbaordData.files.length) {
+			 || window.clipboardData && window.clipboardData.files && window.clipboardData.files.length) {
 			for (const item of evt.clipboardData.items) {
 				if (item.kind === 'file') {
 				evt.preventDefault();
